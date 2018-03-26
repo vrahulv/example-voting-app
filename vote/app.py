@@ -7,6 +7,8 @@ import json
 
 option_a = os.getenv('OPTION_A', "Cats")
 option_b = os.getenv('OPTION_B', "Dogs")
+option_c = os.getenv('OPTION_B', "Rats")
+option_d = os.getenv('OPTION_B', "Spiders")
 hostname = socket.gethostname()
 
 app = Flask(__name__)
@@ -34,6 +36,8 @@ def hello():
         'index.html',
         option_a=option_a,
         option_b=option_b,
+        option_c=option_c,
+        option_d=option_d,
         hostname=hostname,
         vote=vote,
     ))

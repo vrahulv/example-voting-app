@@ -32,6 +32,14 @@ body{
   background-color: #00cbca;
 }
 
+#background-stats-3{
+  background-color: #00ffca;
+}
+
+#background-stats-4{
+  background-color: #00cbff;
+}
+
 #content-container{
   z-index:2;
   position:relative;
@@ -97,6 +105,17 @@ body{
   color: #2196f3;
   float: left;
 }
+
+#choice .choice.rats{
+  color: #2196f3;
+  float: right;
+}
+
+#choice .choice.spiders{
+  color: #2196f3;
+  float: left;
+}
+
 #background-stats{
   z-index:1;
   height:100%;

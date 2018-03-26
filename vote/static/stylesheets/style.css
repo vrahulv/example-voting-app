@@ -35,6 +35,14 @@ button.b{
   background-color: #00cbca;
 }
 
+button.c{
+  background-color: #00cbff;
+}
+
+button.d{
+  background-color: #00cbac;
+}
+
 #tip{
   text-align: left;
   color: #c0c9ce;
@@ -106,11 +114,27 @@ button.b{
   background-color: #00a2a1;
 }
 
+#choice button.c:hover{
+  background-color: #00a2a1;
+}
+
+#choice button.d:hover{
+  background-color: #00a2a1;
+}
+
 #choice button.a:focus{
   background-color: #1488c6;
 }
 
 #choice button.b:focus{
+  background-color: #00a2a1;
+}
+
+#choice button.c:focus{
+  background-color: #00a2a1;
+}
+
+#choice button.d:focus{
   background-color: #00a2a1;
 }
 
