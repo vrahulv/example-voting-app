@@ -8,14 +8,20 @@ oc new-project my-vote-app
 oc new-app postgres:9.4 --name=db 
 oc new-app redis:alpine --name=redis 
 
+(
 oc new-build --binary python:2.7-alpine --name vote 
-( oc start-build vote --from-dir=vote -w ) & 
+oc start-build vote --from-dir=vote -w
+) & 
 
+(
 oc new-build --binary node:8.9-alpine --name result
-( oc start-build result --from-dir=result -w ) & 
+oc start-build result --from-dir=result -w
+) & 
 
+(
 oc new-build --binary microsoft/dotnet:2.0.0-sdk --name worker
-( oc start-build worker --from-dir=worker -w ) & 
+oc start-build worker --from-dir=worker -w
+) & 
 
 wait 
 
