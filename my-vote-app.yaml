@@ -1,0 +1,837 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: my-vote-app
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: result
+    name: result
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: result:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: result
+      git:
+        ref: master
+        uri: 'https://github.com/sjbylo/example-voting-app.git'
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: node:8.9-alpine
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: jurW3bYHoTnA0jnalcV0
+      type: GitHub
+    - generic:
+        secret: wYUPIyxFLUthRfQuk6gk
+      type: Generic
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: vote
+    name: vote
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: vote:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: vote
+      git:
+        ref: master
+        uri: 'https://github.com/sjbylo/example-voting-app.git'
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: python:2.7-alpine
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: wZyRtZ5EYLxovJX2seda
+      type: GitHub
+    - generic:
+        secret: UMZ57LWuwdOwDIJYR-lP
+      type: Generic
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: worker
+    name: worker
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: worker:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: worker
+      git:
+        ref: master
+        uri: 'https://github.com/sjbylo/example-voting-app.git'
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: dotnet:2.0.0-sdk
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: m_SdxJftf4Wmq44Rpt6t
+      type: GitHub
+    - generic:
+        secret: XxOVH9U17WgAc_YPnevt
+      type: Generic
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: db
+    name: db
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: db
+      deploymentconfig: db
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: db
+          deploymentconfig: db
+      spec:
+        containers:
+        - image: postgres@sha256:2424db28113bc5d94183d7d63f64206dd2d551f269682ff43535aeda0b96c8ab
+          imagePullPolicy: IfNotPresent
+          name: db
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: db-volume-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: db-volume-1
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - db
+        from:
+          kind: ImageStreamTag
+          name: db:9.4
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: redis
+    name: redis
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: redis
+      deploymentconfig: redis
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: redis
+          deploymentconfig: redis
+      spec:
+        containers:
+        - image: redis@sha256:9d017f829df3d0800f2a2582c710143767f6dda4df584b708260e73b1a1b6db3
+          imagePullPolicy: IfNotPresent
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data
+            name: redis-volume-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: redis-volume-1
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - redis
+        from:
+          kind: ImageStreamTag
+          name: redis:alpine
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: result
+    name: result
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: result
+      deploymentconfig: result
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: result
+          deploymentconfig: result
+      spec:
+        containers:
+        - image: 172.30.1.1:5000/vote/result@sha256:78ac8eb55a92acf0fa8bdee152446e0a6459e818275ce4f3e4e87fda0ce2b496
+          imagePullPolicy: Always
+          name: result
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - result
+        from:
+          kind: ImageStreamTag
+          name: result:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: vote
+    name: vote
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: vote
+      deploymentconfig: vote
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: vote
+          deploymentconfig: vote
+      spec:
+        containers:
+        - image: 172.30.1.1:5000/vote/vote@sha256:b4af1e7035466c2992a7dc5a7a82073a81a92df4c97ba11ce326d5e128c33caf
+          imagePullPolicy: Always
+          name: vote
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - vote
+        from:
+          kind: ImageStreamTag
+          name: vote:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: worker
+    name: worker
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: worker
+      deploymentconfig: worker
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: worker
+          deploymentconfig: worker
+      spec:
+        containers:
+        - image: 172.30.1.1:5000/vote/worker@sha256:a1cf84813dec60707035f215fe24dbc08e982cba116f8aae015c3b390cf8af25
+          imagePullPolicy: Always
+          name: worker
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - worker
+        from:
+          kind: ImageStreamTag
+          name: worker:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: db
+    name: db
+  spec:
+    ports:
+    - name: 5432-tcp
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: db
+      deploymentconfig: db
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: redis
+    name: redis
+  spec:
+    ports:
+    - name: 6379-tcp
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      app: redis
+      deploymentconfig: redis
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: result
+    name: result
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: result
+      deploymentconfig: result
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: vote
+    name: vote
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: vote
+      deploymentconfig: vote
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: result
+    name: result
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: result
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-03-23T22:06:17Z
+        status: "True"
+        type: Admitted
+      host: result-vote.192.168.99.100.nip.io
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: vote
+    name: vote
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: vote
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-03-23T22:06:14Z
+        status: "True"
+        type: Admitted
+      host: vote-vote.192.168.99.100.nip.io
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/image.dockerRepositoryCheck: 2018-03-23T21:59:19Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: db
+    name: db
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: postgres:9.4
+      from:
+        kind: DockerImage
+        name: docker.io/postgres:9.4
+      generation: 2
+      importPolicy: {}
+      name: "9.4"
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+      openshift.io/image.dockerRepositoryCheck: 2018-03-23T21:59:58Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      build: worker
+    name: dotnet
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: microsoft/dotnet:2.0.0-sdk
+      from:
+        kind: DockerImage
+        name: docker.io/microsoft/dotnet:2.0.0-sdk
+      generation: 2
+      importPolicy: {}
+      name: 2.0.0-sdk
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+      openshift.io/image.dockerRepositoryCheck: 2018-03-23T21:58:44Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      build: result
+    name: node
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: node:8.9-alpine
+      from:
+        kind: DockerImage
+        name: docker.io/node:8.9-alpine
+      generation: 2
+      importPolicy: {}
+      name: 8.9-alpine
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+      openshift.io/image.dockerRepositoryCheck: 2018-03-23T21:58:10Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      build: vote
+    name: python
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: python:2.7-alpine
+      from:
+        kind: DockerImage
+        name: docker.io/python:2.7-alpine
+      generation: 2
+      importPolicy: {}
+      name: 2.7-alpine
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/image.dockerRepositoryCheck: 2018-03-23T21:59:42Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: redis
+    name: redis
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: redis:alpine
+      from:
+        kind: DockerImage
+        name: docker.io/redis:alpine
+      generation: 2
+      importPolicy: {}
+      name: alpine
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    generation: 1
+    labels:
+      build: result
+    name: result
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.1.1:5000/vote/result:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    generation: 1
+    labels:
+      build: vote
+    name: vote
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.1.1:5000/vote/vote:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    generation: 1
+    labels:
+      build: worker
+    name: worker
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.1.1:5000/vote/worker:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
