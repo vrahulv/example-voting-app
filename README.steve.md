@@ -1,8 +1,8 @@
 ```
 mkdir steve || exit 1
 cd steve/
-git clone https://github.com/dockersamples/example-voting-app
-oc new-project myvoteapp
+git clone https://github.com/sjbylo/example-voting-app
+oc new-project my-vote-app 
 
 oc new-build --binary python:2.7-alpine --name vote 
 oc start-build vote --from-dir=vote
@@ -27,7 +27,7 @@ oc new-build --binary microsoft/dotnet:2.0.0-sdk --name worker
 oc start-build worker --from-dir=worker
 oc new-app worker --name worker
 
-oc export bc,dc,svc,route,is --as-template=vote-app > ~/vote-app.yaml
+oc export bc,dc,svc,route,is --as-template=my-vote-app > my-vote-app.yaml
 
 ----
 
