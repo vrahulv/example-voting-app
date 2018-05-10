@@ -1,4 +1,5 @@
-FROM microsoft/dotnet:2.0.0-sdk
+#FROM microsoft/dotnet:2.0.0-sdk
+FROM registry.access.redhat.com/dotnet/dotnet-20-runtime-rhel7
 
 WORKDIR /code
 

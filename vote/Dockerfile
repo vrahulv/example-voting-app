@@ -1,5 +1,6 @@
 # Using official python runtime base image
-FROM python:2.7-alpine
+#FROM python:2.7-alpine
+FROM registry.access.redhat.com/rhscl/python-27-rhel7
 
 # Set the application directory
 WORKDIR /app
