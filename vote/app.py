@@ -5,7 +5,7 @@ import socket
 import random
 import json
 
-option_a = os.getenv('OPTION_A', "Red Hat")
+option_a = os.getenv('OPTION_A', "RED HAT")
 option_b = os.getenv('OPTION_B', "DELL EMC")
 option_c = os.getenv('OPTION_B', "HPE")
 option_d = os.getenv('OPTION_B', "SCALITY")
