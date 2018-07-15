@@ -103,7 +103,7 @@ body{
 
 #choice .choice.cats{
   color: #2196f3;
-  float: left;
+  float: right;
 }
 
 #choice .choice.rats{
@@ -113,7 +113,7 @@ body{
 
 #choice .choice.spiders{
   color: #2196f3;
-  float: left;
+  float: right;
 }
 
 #background-stats{
