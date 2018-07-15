@@ -5,10 +5,10 @@ import socket
 import random
 import json
 
-option_a = os.getenv('OPTION_A', "Cats")
-option_b = os.getenv('OPTION_B', "Dogs")
-option_c = os.getenv('OPTION_B', "Rats")
-option_d = os.getenv('OPTION_B', "Spiders")
+option_a = os.getenv('OPTION_A', "Red Hat Storage")
+option_b = os.getenv('OPTION_B', "Scality")
+option_c = os.getenv('OPTION_B', "EMC Scale IO")
+option_d = os.getenv('OPTION_B', "HPE-Nimble")
 hostname = socket.gethostname()
 
 app = Flask(__name__)
