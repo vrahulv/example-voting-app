@@ -108,12 +108,12 @@ body{
 
 #choice .choice.rats{
   color: #2196f3;
-  float: right;
+  float: left;
 }
 
 #choice .choice.spiders{
   color: #2196f3;
-  float: right;
+  float: left;
 }
 
 #background-stats{
